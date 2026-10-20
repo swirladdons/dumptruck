@@ -70,7 +70,7 @@ end)
 local content = CreateFrame("Frame", nil, scrollFrame)
 content:SetHeight(1)
 scrollFrame:SetScrollChild(content)
-scrollFrame:SetScript("OnSizeChanged", function(self, width)
+scrollFrame:SetScript("OnSizeChanged", function(_, width)
     content:SetWidth(width)
 end)
 
@@ -347,7 +347,7 @@ end
 
 hooksecurefunc("ContainerFrameItemButton_OnClick", OnBagItemClick)
 
-frame:SetScript("OnUpdate", function(self, elapsed)
+frame:SetScript("OnUpdate", function(_, elapsed)
     timeSinceLastUpdate = timeSinceLastUpdate + elapsed
     if timeSinceLastUpdate >= updateInterval then
         ProcessQueue()
@@ -361,7 +361,7 @@ frame:RegisterEvent("AUCTION_HOUSE_CLOSED")
 frame:RegisterEvent("COMMODITY_SEARCH_RESULTS_UPDATED")
 frame:RegisterEvent("ITEM_SEARCH_RESULTS_UPDATED")
 
-frame:SetScript("OnEvent", function(self, event, ...)
+frame:SetScript("OnEvent", function(_, event, ...)
     if event == "AUCTION_HOUSE_SHOW" then
         if frame:GetParent() ~= AuctionHouseFrame then
             frame:SetParent(AuctionHouseFrame)
@@ -380,7 +380,9 @@ frame:SetScript("OnEvent", function(self, event, ...)
         end
         if C_AuctionHouse.GetNumCommoditySearchResults(itemID) > 0 then
             local result = C_AuctionHouse.GetCommoditySearchResultInfo(itemID, 1)
-            SetPrice(searching, result.unitPrice, result.containsOwnerItem)
+            if result then
+                SetPrice(searching, result.unitPrice, result.containsOwnerItem)
+            end
         elseif C_AuctionHouse.HasFullCommoditySearchResults(itemID) then
             SetPrice(searching, nil)
         end
@@ -391,8 +393,8 @@ frame:SetScript("OnEvent", function(self, event, ...)
         end
         for i = 1, C_AuctionHouse.GetNumItemSearchResults(itemKey) do
             local result = C_AuctionHouse.GetItemSearchResultInfo(itemKey, i)
-            local levelMatches = not searching.isEquipment or result.itemKey.itemLevel == searching.itemKey.itemLevel
-            if result.buyoutAmount and levelMatches then
+            local levelMatches = result and (not searching.isEquipment or result.itemKey.itemLevel == searching.itemKey.itemLevel)
+            if result and result.buyoutAmount and levelMatches then
                 SetPrice(searching, result.buyoutAmount, result.containsOwnerItem)
                 return
             end
