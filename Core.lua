@@ -44,9 +44,15 @@ headerLine:SetPoint("TOPLEFT", header, "BOTTOMLEFT")
 headerLine:SetPoint("TOPRIGHT", header, "BOTTOMRIGHT")
 headerLine:SetColorTexture(1, 1, 1, 0.12)
 
+local titleIcon = header:CreateTexture(nil, "OVERLAY")
+titleIcon:SetSize(18, 18)
+titleIcon:SetPoint("LEFT", T.padding.med, 0)
+titleIcon:SetTexture("Interface\\Icons\\achievement_guildperk_cashflow_rank2")
+titleIcon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
+
 local title = header:CreateFontString(nil, "OVERLAY")
 C.ApplyFont(title, "large")
-title:SetPoint("LEFT", T.padding.med, 0)
+title:SetPoint("LEFT", titleIcon, "RIGHT", 6, 0)
 title:SetText("Dump Truck")
 title:SetTextColor(T.accent.r, T.accent.g, T.accent.b, 1)
 
