@@ -4,7 +4,7 @@
 ## Notes: Right-click bag items at the auction house to queue them, then post them one click each at the current lowest price
 ## Author: Swirl
 ## Version: @project-version@
-## IconTexture: Interface\ICONS\inv_misc_coin_01
+## IconTexture: Interface\ICONS\achievement_guildperk_cashflow_rank2
 ## Group: SwirlUI
 
 ## Category: Auctions
