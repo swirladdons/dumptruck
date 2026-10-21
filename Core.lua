@@ -17,6 +17,7 @@ local ITEM_SORT = {sortOrder = Enum.AuctionHouseSortOrder.Buyout, reverseSort = 
 
 local items = {}
 local rows = {}
+local sizeRows = 0
 local searching = nil
 local searchSentAt = 0
 
@@ -191,9 +192,12 @@ local function GetRow(index)
     return row
 end
 
-local function Resize()
+local function Resize(toEnd)
+    if toEnd then
+        sizeRows = math.max(sizeRows, #items)
+    end
     local chrome = T.headerHeight + T.padding.small + FOOTER_HEIGHT
-    local height = chrome + math.max(1, #items) * ROW_HEIGHT
+    local height = chrome + math.max(1, sizeRows) * ROW_HEIGHT
     local maxHeight = AuctionHouseFrame and AuctionHouseFrame:GetHeight() or 0
     if maxHeight > 0 then
         height = math.min(height, maxHeight)
@@ -201,9 +205,14 @@ local function Resize()
     frame:SetHeight(height)
     local maxScroll = math.max(0, #items * ROW_HEIGHT - (height - chrome))
     scrollFrame:SetVerticalScroll(math.min(scrollFrame:GetVerticalScroll(), maxScroll))
+    if toEnd then
+        C_Timer.After(0, function()
+            scrollFrame:SetVerticalScroll(scrollFrame:GetVerticalScrollRange())
+        end)
+    end
 end
 
-UpdateList = function()
+UpdateList = function(toEnd)
     for i, item in ipairs(items) do
         local row = GetRow(i)
         row.item = item
@@ -229,7 +238,7 @@ UpdateList = function()
         rows[i]:Hide()
     end
     content:SetHeight(math.max(1, #items * ROW_HEIGHT))
-    Resize()
+    Resize(toEnd)
     UpdatePostButton()
 end
 
@@ -321,7 +330,7 @@ local function AddItem(location)
         icon = info.iconFileID,
         quantity = C_AuctionHouse.GetAvailablePostCount(location),
     })
-    UpdateList()
+    UpdateList(true)
     ProcessQueue()
 end
 
@@ -356,6 +365,7 @@ end
 clearButton:SetCallback(function()
     wipe(items)
     searching = nil
+    sizeRows = 0
     UpdateList()
 end)
 
@@ -394,6 +404,7 @@ frame:SetScript("OnEvent", function(_, event, ...)
     elseif event == "AUCTION_HOUSE_CLOSED" then
         wipe(items)
         searching = nil
+        sizeRows = 0
     elseif event == "COMMODITY_SEARCH_RESULTS_UPDATED" then
         local itemID = ...
         if not searching or not searching.isCommodity or searching.itemKey.itemID ~= itemID then
