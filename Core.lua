@@ -191,6 +191,18 @@ local function GetRow(index)
     return row
 end
 
+local function Resize()
+    local chrome = T.headerHeight + T.padding.small + FOOTER_HEIGHT
+    local height = chrome + math.max(1, #items) * ROW_HEIGHT
+    local maxHeight = AuctionHouseFrame and AuctionHouseFrame:GetHeight() or 0
+    if maxHeight > 0 then
+        height = math.min(height, maxHeight)
+    end
+    frame:SetHeight(height)
+    local maxScroll = math.max(0, #items * ROW_HEIGHT - (height - chrome))
+    scrollFrame:SetVerticalScroll(math.min(scrollFrame:GetVerticalScroll(), maxScroll))
+end
+
 UpdateList = function()
     for i, item in ipairs(items) do
         local row = GetRow(i)
@@ -217,6 +229,7 @@ UpdateList = function()
         rows[i]:Hide()
     end
     content:SetHeight(math.max(1, #items * ROW_HEIGHT))
+    Resize()
     UpdatePostButton()
 end
 
@@ -375,7 +388,6 @@ frame:SetScript("OnEvent", function(_, event, ...)
         if frame:GetParent() ~= AuctionHouseFrame then
             frame:SetParent(AuctionHouseFrame)
             frame:SetPoint("TOPLEFT", AuctionHouseFrame, "TOPRIGHT", 2, 0)
-            frame:SetPoint("BOTTOMLEFT", AuctionHouseFrame, "BOTTOMRIGHT", 2, 0)
         end
         frame:Show()
         UpdateList()
