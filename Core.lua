@@ -1,6 +1,9 @@
-local SUI = SwirlUI
-local C = SUI.Components
-local T = SUI.Theme
+local ADDON, SF = ...
+local C = SF.Components
+local T = SF.Theme
+
+SF.Setup(ADDON)
+SF.InitTheme()
 
 local DURATION = 2 -- 1 = 12h, 2 = 24h, 3 = 48h
 local SEARCH_TIMEOUT = 3

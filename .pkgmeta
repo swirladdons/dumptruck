@@ -1,0 +1,6 @@
+package-as: DumpTruck
+
+externals:
+    UI:
+        url: https://github.com/lolswirl/SwirlFramework
+        branch: main

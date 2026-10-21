@@ -6,8 +6,9 @@
 ## Version: @project-version@
 ## IconTexture: Interface\ICONS\inv_misc_coin_01
 ## Group: SwirlUI
-## Dependencies: SwirlUI
 
 ## Category: Auctions
+
+UI/SwirlFramework.xml
 
 Core.lua
